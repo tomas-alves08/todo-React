@@ -2,29 +2,30 @@ import React, { useState, useEffect } from "react";
 import ListGroup from "react-bootstrap/ListGroup";
 import Form from "react-bootstrap/Form";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { getTodos } from "./utils/todoService";
+import { handleDelete, handleTodoCheck } from "./utils/functions";
 import "./App.css";
 import { FaPen, FaTrash } from "react-icons/fa";
-import { deleteTodo, getTodos, updateTodo } from "./utils/todoService";
+import ToDoForm from "./components/ToDoForm";
 
 function App() {
   const [todos, setTodos] = useState([]);
+  const [createStatus, setCreateStatus] = useState(true);
+  const [form, setForm] = useState({
+    id: null,
+    item: "",
+    description: "",
+    dueDate: null,
+  });
 
-  const handleDelete = async (id) => {
-    const deletedTodo = await deleteTodo(id);
-    return deletedTodo;
-  };
-
-  const handleTodoCheck = async (idx, todo) => {
-    const updatedTodo = {
-      id: todo.id,
-      description: todo.description,
-      dueDate: todo.dueDate,
-      item: todo.item,
-      dateComplete: new Date().toISOString(),
-      isCompleted: !todo.isCompleted,
-    };
-
-    await updateTodo(idx, updatedTodo);
+  const handleUpdate = (id, item, description, dueDate) => {
+    setForm({
+      id,
+      item,
+      description,
+      dueDate,
+    });
+    setCreateStatus(false);
   };
 
   useEffect(() => {
@@ -43,6 +44,14 @@ function App() {
   return (
     <div className="App">
       <h1>Todos</h1>
+
+      <ToDoForm
+        form={form}
+        setForm={setForm}
+        createStatus={createStatus}
+        setCreateStatus={setCreateStatus}
+      />
+
       {todos &&
         todos?.data?.map((todo, idx) => {
           const dateComplete = todo.dateComplete.toString().slice(0, 10);
@@ -117,7 +126,18 @@ function App() {
                   variant={todo.isCompleted ? "success" : "primary"}
                 >
                   <div className="mt-2 mx-2 d-flex justify-content-between align-items-start">
-                    <div className="mx-2" style={{ color: "blue" }}>
+                    <div
+                      className="mx-2"
+                      style={{ color: "blue" }}
+                      onClick={() =>
+                        handleUpdate(
+                          todo.id,
+                          todo.item,
+                          todo.description,
+                          todo.dueDate.toString()
+                        )
+                      }
+                    >
                       <FaPen />
                     </div>
                     <div
