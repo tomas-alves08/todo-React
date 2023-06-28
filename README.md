@@ -1,6 +1,6 @@
-### todo-React
+# todo-React
 
-# Description
+## Description
 This project is a ToDo List done using React, React Hooks and Axios to consume API created using C# .NET as per repo https://github.com/tomas-alves08/ToDoC-
 
 In this project you can see all the Todos contained in the SQL Database. Moreover, you can create, tick the completed items, but also delete and update existent todos.
